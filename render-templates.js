@@ -20,19 +20,13 @@ module.exports = function(callback) {
       'FPMMDeterministicFactory',
       'FixedProductMarketMaker',
       'ConditionalTokens',
-      'Realitio',
-      'RealitioProxy',
-      'RealitioScalarAdapter',
       'ERC20Detailed',
-      'DXTokenRegistry',
-      'GeneralizedTCR',
       'UniswapV2Factory',
       'UniswapV2Pair',
       'WETH9',
       'DAI',
       'USDC',
       'USDT',
-      'GelatoCore'
     ]) {
       const { abi } = fs.readJsonSync(`build/contracts/${contractName}.json`);
       fs.outputJsonSync(`abis/${contractName}.json`, abi, { spaces: 2 });
@@ -55,7 +49,6 @@ module.exports = function(callback) {
       ['src/utils/token', 'ts'],
       ['src/FPMMDeterministicFactoryMapping', 'ts'],
       ['src/ConditionalTokensMapping', 'ts'],
-      ['src/RealitioMapping', 'ts'],
       ['src/UniswapV2PairMapping', 'ts'],
     ]) {
       const template = fs.readFileSync(`${templatedFileDesc[0]}.template.${templatedFileDesc[1]}`).toString();

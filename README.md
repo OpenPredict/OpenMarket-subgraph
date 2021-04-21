@@ -1,6 +1,6 @@
-# Omen Subgraph
+# OpenMarket Subgraph
 
-This repo defines a subgraph which is used by Omen.
+This repo defines a subgraph which is used by OpenMarket.
 
 The `docker-compose.yml` contains a Docker Compose configuration suitable for spinning up a test environment.
 
@@ -12,7 +12,7 @@ The `package.json` contains a definition of this package. The `scripts` key defi
 * `npm run test-fresh-graph`: builds and deploys the subgraph onto the test environment, and runs the test suite.
 * `npm run test-existing-graph`: runs the test suite.
 * `npm run codegen`: rerenders code templates and runs the `graph codegen` command, which regenerates subgraph mapping support source files.
-* `npm run publish-graph:mainnet` and `npm run publish-graph:rinkeby`: rerenders the code templates using configurations suitable to the network mentioned, and then uses the Graph CLI to deploy the subgraph. May only be done by authorized parties. To deploy your own instance of this subgraph, you can change `protofire/omen` to `<your-account>/omen`, where `<your-account>` is your account on [the Graph's website](thegraph.com).
+* `npm run publish-graph:mainnet` and `npm run publish-graph:rinkeby`: rerenders the code templates using configurations suitable to the network mentioned, and then uses the Graph CLI to deploy the subgraph. May only be done by authorized parties. To deploy your own instance of this subgraph, you can change `openpredict/openmarket` to `<your-account>/openmarket`, where `<your-account>` is your account on [the Graph's website](thegraph.com).
 
 A typical development session might look like this:
 
@@ -31,6 +31,15 @@ npm run test-fresh-graph
 npm run test-existing-graph
 
 docker-compose down # clean up session at the end
+```
+
+```bash
+docker-compose up # spins up docker as a graph server + ganache blockchain
+yarn migrate      # build contracts, deploy on chain
+yarn codegen
+yarn build
+yarn create-local
+yarn deploy-local
 ```
 
 ## Code templates

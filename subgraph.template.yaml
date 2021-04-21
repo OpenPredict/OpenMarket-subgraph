@@ -1,92 +1,9 @@
 specVersion: 0.0.2
-description: Omen
-repository: https://github.com/protofire/omen-subgraph
+description: OpenMarket
+repository: https://github.com/OpenPredict/OpenMarket-subgraph
 schema:
   file: ./schema.graphql
 dataSources:
-  - kind: ethereum/contract
-    name: Realitio
-    network: {{network}}
-    source:
-      address: '{{Realitio.address}}'
-      abi: Realitio
-      startBlock: {{Realitio.startBlock}}
-    mapping:
-      kind: ethereum/events
-      apiVersion: 0.0.3
-      language: wasm/assemblyscript
-      entities:
-        - Question
-        - Category
-        - FixedProductMarketMaker
-      abis:
-        - name: Realitio
-          file: ./abis/Realitio.json
-      eventHandlers:
-        - event: LogNewQuestion(indexed bytes32,indexed address,uint256,string,indexed bytes32,address,uint32,uint32,uint256,uint256)
-          handler: handleNewQuestion
-        - event: LogNewAnswer(bytes32,indexed bytes32,bytes32,indexed address,uint256,uint256,bool)
-          handler: handleNewAnswer
-        - event: LogAnswerReveal(indexed bytes32,indexed address,indexed bytes32,bytes32,uint256,uint256)
-          handler: handleAnswerReveal
-        - event: LogNotifyOfArbitrationRequest(indexed bytes32,indexed address)
-          handler: handleArbitrationRequest
-        - event: LogFinalize(indexed bytes32,indexed bytes32)
-          handler: handleFinalize
-      file: ./src/RealitioMapping.ts
-  - kind: ethereum/contract
-    name: GelatoCore
-    network: {{network}}
-    source:
-      address: '{{GelatoCore.address}}'
-      abi: GelatoCore
-      startBlock: {{GelatoCore.startBlock}}
-    mapping:
-      kind: ethereum/events
-      apiVersion: 0.0.3
-      language: wasm/assemblyscript
-      entities:
-        - GelatoUser
-        - Task
-        - Provider
-        - TaskReceiptWrapper
-        - TaskCycle
-        - TaskReceipt
-        - TaskCondition
-        - Action
-      abis:
-        - name: GelatoCore
-          file: ./abis/GelatoCore.json
-      eventHandlers:
-        - event: LogTaskSubmitted(indexed uint256,indexed bytes32,(uint256,address,(address,address),uint256,((address,bytes)[],(address,bytes,uint8,uint8,uint256,bool)[],uint256,uint256)[],uint256,uint256,uint256))
-          handler: handleLogTaskSubmitted
-        - event: LogExecReverted(indexed address,indexed uint256,uint256,string)
-          handler: handleLogExecReverted
-        - event: LogExecSuccess(indexed address,indexed uint256,uint256,uint256)
-          handler: handleLogExecSuccess
-        - event: LogTaskCancelled(indexed uint256,indexed address)
-          handler: handleLogTaskCancelled
-      file: ./src/GelatoCoreMapping.ts
-  - kind: ethereum/contract
-    name: RealitioScalarAdapter
-    network: {{network}}
-    source:
-      address: '{{RealitioScalarAdapter.address}}'
-      abi: RealitioScalarAdapter
-      startBlock: {{RealitioScalarAdapter.startBlock}}
-    mapping:
-      kind: ethereum/events
-      apiVersion: 0.0.3
-      language: wasm/assemblyscript
-      entities:
-        - ScalarQuestionLink
-      abis:
-        - name: RealitioScalarAdapter
-          file: ./abis/RealitioScalarAdapter.json
-      eventHandlers:
-        - event: QuestionIdAnnouncement(indexed bytes32,indexed bytes32,uint256,uint256)
-          handler: handleScalarQuestionIdAnnouncement
-      file: ./src/RealitioMapping.ts
   - kind: ethereum/contract
     name: ConditionalTokens
     network: {{network}}
@@ -100,7 +17,6 @@ dataSources:
       language: wasm/assemblyscript
       entities:
         - Condition
-        - Question
         - Category
         - FixedProductMarketMaker
         - Global
@@ -113,36 +29,6 @@ dataSources:
         - event: ConditionResolution(indexed bytes32,indexed address,indexed bytes32,uint256,uint256[])
           handler: handleConditionResolution
       file: ./src/ConditionalTokensMapping.ts
-{{#DXTokenRegistry.address}}
-  - kind: ethereum/contract
-    name: DXTokenRegistry
-    network: {{network}}
-    source:
-      address: '{{DXTokenRegistry.address}}'
-      abi: DXTokenRegistry
-      startBlock: {{DXTokenRegistry.startBlock}}
-    mapping:
-      kind: ethereum/events
-      apiVersion: 0.0.3
-      language: wasm/assemblyscript
-      entities:
-        - FixedProductMarketMaker
-        - RegisteredToken
-        - TokenList
-      abis:
-        - name: DXTokenRegistry
-          file: ./abis/DXTokenRegistry.json
-        - name: ERC20Detailed
-          file: ./abis/ERC20Detailed.json
-      eventHandlers:
-        - event: AddList(uint256,string)
-          handler: handleAddList
-        - event: AddToken(uint256,address)
-          handler: handleAddToken
-        - event: RemoveToken(uint256,address)
-          handler: handleRemoveToken
-      file: ./src/DXTokenRegistryMapping.ts
-{{/DXTokenRegistry.address}}
   - kind: ethereum/contract
     name: FPMMDeterministicFactory
     network: {{network}}
@@ -157,7 +43,6 @@ dataSources:
       entities:
         - FixedProductMarketMaker
         - Condition
-        - Question
         - Token
         - Global
       abis:
@@ -169,28 +54,6 @@ dataSources:
         - event: FixedProductMarketMakerCreation(indexed address,address,address,address,bytes32[],uint256)
           handler: handleFixedProductMarketMakerCreation
       file: ./src/FPMMDeterministicFactoryMapping.ts
-{{#GeneralizedTCR.address}}
-  - kind: ethereum/contract
-    name: GeneralizedTCR
-    network: {{network}}
-    source:
-      address: '{{GeneralizedTCR.address}}'
-      abi: GeneralizedTCR
-      startBlock: {{GeneralizedTCR.startBlock}}
-    mapping:
-      kind: ethereum/events
-      apiVersion: 0.0.3
-      language: wasm/assemblyscript
-      entities:
-        - FixedProductMarketMaker
-      abis:
-        - name: GeneralizedTCR
-          file: ./abis/GeneralizedTCR.json
-      eventHandlers:
-        - event: ItemStatusChange(indexed bytes32,indexed uint256,indexed uint256,bool,bool)
-          handler: handleItemStatusChange
-      file: ./src/GeneralizedTCRMapping.ts
-{{/GeneralizedTCR.address}}
   - kind: ethereum/contract
     name: UniswapV2Factory
     network: {{network}}

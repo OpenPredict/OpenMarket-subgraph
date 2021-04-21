@@ -4,7 +4,6 @@ import { FixedProductMarketMakerCreation } from "../generated/FPMMDeterministicF
 import {
   FixedProductMarketMaker,
   Condition,
-  Question,
 } from "../generated/schema";
 import { FixedProductMarketMaker as FixedProductMarketMakerTemplate } from "../generated/templates";
 import { zero, secondsPerHour, hoursPerDay, zeroDec } from "./utils/constants";
@@ -58,11 +57,6 @@ export function handleFixedProductMarketMakerCreation(
   fpmm.outcomeSlotCount = outcomeTokenCount;
   fpmm.indexedOnQuestion = false;
 
-  fpmm.curatedByDxDao = false;
-  fpmm.curatedByDxDaoOrKleros = false;
-  fpmm.klerosTCRregistered = false;
-  fpmm.submissionIDs = [];
-
   if (conditionIdStrs.length == 1) {
     let conditionIdStr = conditionIdStrs[0];
     fpmm.condition = conditionIdStr;
@@ -76,42 +70,8 @@ export function handleFixedProductMarketMakerCreation(
       return;
     }
 
-    let questionIdStr = condition.question;
-    fpmm.question = questionIdStr;
     fpmm.scalarLow = condition.scalarLow;
     fpmm.scalarHigh = condition.scalarHigh;
-
-    let question = Question.load(questionIdStr);
-    if (question != null) {
-      fpmm.templateId = question.templateId;
-      fpmm.data = question.data;
-      fpmm.title = question.title;
-      fpmm.outcomes = question.outcomes;
-      fpmm.category = question.category;
-      fpmm.language = question.language;
-      fpmm.arbitrator = question.arbitrator;
-      fpmm.openingTimestamp = question.openingTimestamp;
-      fpmm.timeout = question.timeout;
-
-      if (question.indexedFixedProductMarketMakers.length < 100) {
-        fpmm.currentAnswer = question.currentAnswer;
-        fpmm.currentAnswerBond = question.currentAnswerBond;
-        fpmm.currentAnswerTimestamp = question.currentAnswerTimestamp;
-        fpmm.isPendingArbitration = question.isPendingArbitration;
-        fpmm.arbitrationOccurred = question.arbitrationOccurred;
-        fpmm.answerFinalizedTimestamp = question.answerFinalizedTimestamp;
-        let fpmms = question.indexedFixedProductMarketMakers;
-        fpmms.push(addressHexString);
-        question.indexedFixedProductMarketMakers = fpmms;
-        question.save();
-        fpmm.indexedOnQuestion = true;
-      } else {
-        log.warning(
-          "cannot continue updating live question (id {}) properties on fpmm {}",
-          [questionIdStr, addressHexString]
-        );
-      }
-    }
   }
 
   let outcomeTokenAmounts = new Array<BigInt>(outcomeTokenCount);
