@@ -10,13 +10,19 @@ contract MockERC20 is ERC20, ERC20Detailed {
 }
 
 contract DAI is MockERC20 {
-  constructor() public ERC20Detailed("Dai Stablecoin", "DAI", 18) {}
+  constructor() public ERC20Detailed("Dai Stablecoin", "DAI", 18) {
+    _mint(msg.sender, 1000000 ether);
+  }
 }
 
 contract USDC is MockERC20 {
-  constructor() public ERC20Detailed("USD//C", "USDC", 6) {}
+  constructor() public ERC20Detailed("USD//C", "USDC", 6) {
+    _mint(msg.sender, 1000000 ** 6);
+  }
 }
 
 contract USDT is MockERC20 {
-  constructor() public ERC20Detailed("Tether USD", "USDT", 6) {}
+  constructor() public ERC20Detailed("Tether USD", "USDT", 6) {
+    _mint(msg.sender, 1000000 ** 6);
+  }
 }

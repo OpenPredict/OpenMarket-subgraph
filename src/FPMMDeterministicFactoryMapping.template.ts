@@ -1,6 +1,6 @@
 import { BigInt, log, Address, BigDecimal } from "@graphprotocol/graph-ts";
 
-import { FixedProductMarketMakerCreation } from "../generated/FPMMDeterministicFactory/FPMMDeterministicFactory";
+import { FixedProductMarketMakerCreation } from "../generated/FixedProductMarketMakerFactory/FixedProductMarketMakerFactory";
 import {
   FixedProductMarketMaker,
   Condition,
