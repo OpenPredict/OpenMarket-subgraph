@@ -13,7 +13,7 @@
 						"type": "address"
 					},
 					{
-						"internalType": "contract FixedProductMarketMakerFactory",
+						"internalType": "contract FPMMDeterministicFactory",
 						"name": "_fpmmFactory",
 						"type": "address"
 					},
@@ -162,7 +162,7 @@
 				"dweb:/ipfs/QmdZskHkHDANmxM4XVcXLLeUjRJTuUKpWYYRFbR1FseVwv"
 			]
 		},
-		"@gnosis.pm/conditional-tokens-market-makers/contracts/FixedProductMarketMakerFactory.sol": {
+		"@gnosis.pm/conditional-tokens-market-makers/contracts/FPMMDeterministicFactory.sol": {
 			"keccak256": "0x4f62424866e2d66f773c69d1ffc7ef6f5e80db0b030eeb12f9c2141eac76618a",
 			"urls": [
 				"bzz-raw://868a426cbe3bc56df43c941bc6be42b79875f1580caaccd85c4a15e656466edf",

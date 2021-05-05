@@ -1,6 +1,6 @@
 const WETH9 = artifacts.require("WETH9");
 const ConditionalTokens = artifacts.require("ConditionalTokens");
-const FixedProductMarketMakerFactory = artifacts.require("FixedProductMarketMakerFactory");
+const FPMMDeterministicFactory = artifacts.require("FPMMDeterministicFactory");
 const ConditionalTokensManager = artifacts.require("ConditionalTokensManager");
 const UniswapV2Factory = artifacts.require("UniswapV2Factory");
 const DAI = artifacts.require('DAI');
@@ -20,8 +20,8 @@ module.exports = async function (deployer, network, accounts) {
         console.log('deploying ConditionalTokens..');
         contracts['ConditionalTokens']      = await ConditionalTokens.new();
 
-        console.log('deploying FixedProductMarketMakerFactory..');
-        contracts['FixedProductMarketMakerFactory']      = await FixedProductMarketMakerFactory.new();
+        console.log('deploying FPMMDeterministicFactory..');
+        contracts['FPMMDeterministicFactory']      = await FPMMDeterministicFactory.new();
 
         console.log('deploying UniswapV2Factory..');
         contracts['UniswapV2Factory']      = await UniswapV2Factory.new(accounts[0]);
@@ -38,7 +38,7 @@ module.exports = async function (deployer, network, accounts) {
         console.log('deploying ConditionalTokensManager..');
         contracts['ConditionalTokensManager']      = await ConditionalTokensManager.new(
             accounts[0],
-            contracts['FixedProductMarketMakerFactory'].address,
+            contracts['FPMMDeterministicFactory'].address,
             contracts['ConditionalTokens'].address,
             contracts['USDC'].address
         );

@@ -70,7 +70,7 @@
 					"type": "address"
 				},
 				{
-					"internalType": "contract FixedProductMarketMakerFactory",
+					"internalType": "contract FPMMDeterministicFactory",
 					"name": "_fpmmFactory",
 					"type": "address"
 				},
