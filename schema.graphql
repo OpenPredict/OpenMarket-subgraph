@@ -197,6 +197,8 @@ type FpmmTransaction @entity {
   creationTimestamp: BigInt!
   transactionHash: Bytes!
   additionalSharesCost: BigInt
+  outcomeTokenMarginalPrices: [BigDecimal!]
+  fpmmId: ID!
 }
 
 type Account @entity {

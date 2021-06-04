@@ -101,6 +101,9 @@ function recordTrade(
     fpmmTransaction.sharesOrPoolTokenAmount = outcomeTokensTraded;
     fpmmTransaction.creationTimestamp = creationTimestamp;
     fpmmTransaction.transactionHash = transactionHash;
+    fpmmTransaction.outcomeTokenMarginalPrices =
+      fpmm.outcomeTokenMarginalPrices;
+    fpmmTransaction.fpmmId = fpmm.id;
 
     fpmmTransaction.save();
   }
@@ -160,7 +163,9 @@ function recordFPMMLiquidity(
     fpmmTransaction.creationTimestamp = creationTimestamp;
     fpmmTransaction.transactionHash = transactionHash;
     fpmmTransaction.additionalSharesCost = fpmmLiquidity.additionalSharesCost;
-
+    fpmmTransaction.outcomeTokenMarginalPrices =
+      fpmm.outcomeTokenMarginalPrices;
+    fpmmTransaction.fpmmId = fpmm.id;
     fpmmTransaction.save();
   }
 }
