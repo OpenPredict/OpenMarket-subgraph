@@ -16,21 +16,21 @@ contract DAI is MockERC20 {
 }
 
 contract USDC is MockERC20 {
-  constructor() public ERC20Detailed("USD//C", "USDC", 6) {
-    _mint(msg.sender, 1000000 * 10**6);
+  constructor() public ERC20Detailed("USD//C", "USDC", 18) {
+    _mint(msg.sender, 1000000 ether);
   }
 
   function decimals() public view returns (uint8) {
-      return 6;
+      return 18;
   }
 }
 
 contract USDT is MockERC20 {
-  constructor() public ERC20Detailed("Tether USD", "USDT", 6) {
-    _mint(msg.sender, 1000000 * 10**6);
+  constructor() public ERC20Detailed("Tether USD", "USDT", 18) {
+    _mint(msg.sender, 1000000 ether);
   }
 
   function decimals() public view returns (uint8) {
-      return 6;
+      return 18;
   }
 }
