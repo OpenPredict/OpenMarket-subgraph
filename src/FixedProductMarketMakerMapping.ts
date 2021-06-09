@@ -15,6 +15,7 @@ import {
   FpmmTrade,
   FpmmLiquidity,
   FpmmTransaction,
+  ShareBalance,
 } from "../generated/schema";
 import {
   FPMMFundingAdded,
@@ -107,6 +108,29 @@ function recordTrade(
 
     fpmmTransaction.save();
   }
+}
+
+function updateBalance(
+  fpmm: FixedProductMarketMaker,
+  funder: string,
+  outcomeTokensTraded: BigInt,
+  type: string
+): void {
+  let id = funder + fpmm.id;
+  let balance = ShareBalance.load(id);
+  if (balance == null) {
+    balance = new ShareBalance(id);
+    balance.fpmm = fpmm.id;
+    balance.funder = funder;
+    balance.balance = outcomeTokensTraded;
+  } else {
+    if (type == "buy") {
+      balance.balance = balance.balance.plus(outcomeTokensTraded);
+    } else {
+      balance.balance = balance.balance.minus(outcomeTokensTraded);
+    }
+  }
+  balance.save();
 }
 
 function recordFPMMLiquidity(
@@ -489,6 +513,13 @@ export function handleBuy(event: FPMMBuy): void {
     event.params.buyer.toHexString()
   );
 
+  updateBalance(
+    fpmm as FixedProductMarketMaker,
+    event.params.buyer.toHexString(),
+    event.params.outcomeTokensBought,
+    "buy"
+  );
+
   recordTrade(
     fpmm as FixedProductMarketMaker,
     event.params.buyer.toHexString(),
@@ -578,6 +609,13 @@ export function handleSell(event: FPMMSell): void {
   recordParticipation(
     fpmm as FixedProductMarketMaker,
     event.params.seller.toHexString()
+  );
+
+  updateBalance(
+    fpmm as FixedProductMarketMaker,
+    event.params.seller.toHexString(),
+    event.params.outcomeTokensSold,
+    "buy"
   );
 
   recordTrade(

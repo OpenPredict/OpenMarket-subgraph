@@ -109,6 +109,13 @@ type FpmmPoolMembership @entity {
   amount: BigInt!
 }
 
+type ShareBalance @entity {
+  id: ID!
+  funder: String!
+  fpmm: FixedProductMarketMaker!
+  balance: BigInt!
+}
+
 type FpmmParticipation @entity {
   id: ID!
   fpmm: FixedProductMarketMaker!
