@@ -4,6 +4,7 @@ import {
   Address,
   BigDecimal,
   Bytes,
+  ByteArray,
 } from "@graphprotocol/graph-ts";
 
 import {
@@ -114,6 +115,7 @@ function updateBalance(
   fpmm: FixedProductMarketMaker,
   funder: string,
   outcomeTokensTraded: BigInt,
+  outcomeIndex: number,
   type: string
 ): void {
   let id = funder + fpmm.id;
@@ -122,12 +124,24 @@ function updateBalance(
     balance = new ShareBalance(id);
     balance.fpmm = fpmm.id;
     balance.funder = funder;
-    balance.balance = outcomeTokensTraded;
+    if (outcomeIndex === 0) {
+      balance.balanceYes = outcomeTokensTraded;
+    } else {
+      balance.balanceNo = outcomeTokensTraded;
+    }
   } else {
     if (type == "buy") {
-      balance.balance = balance.balance.plus(outcomeTokensTraded);
+      if (outcomeIndex === 0) {
+        balance.balanceYes = balance.balanceYes.plus(outcomeTokensTraded);
+      } else {
+        balance.balanceNo = balance.balanceNo.plus(outcomeTokensTraded);
+      }
     } else {
-      balance.balance = balance.balance.minus(outcomeTokensTraded);
+      if (outcomeIndex === 0) {
+        balance.balanceYes = balance.balanceYes.minus(outcomeTokensTraded);
+      } else {
+        balance.balanceNo = balance.balanceNo.minus(outcomeTokensTraded);
+      }
     }
   }
   balance.save();
@@ -517,6 +531,7 @@ export function handleBuy(event: FPMMBuy): void {
     fpmm as FixedProductMarketMaker,
     event.params.buyer.toHexString(),
     event.params.outcomeTokensBought,
+    outcomeIndex,
     "buy"
   );
 
@@ -615,6 +630,7 @@ export function handleSell(event: FPMMSell): void {
     fpmm as FixedProductMarketMaker,
     event.params.seller.toHexString(),
     event.params.outcomeTokensSold,
+    outcomeIndex,
     "buy"
   );
 

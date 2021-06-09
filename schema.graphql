@@ -113,7 +113,8 @@ type ShareBalance @entity {
   id: ID!
   funder: String!
   fpmm: FixedProductMarketMaker!
-  balance: BigInt!
+  balanceYes: BigInt!
+  balanceNo: BigInt!
 }
 
 type FpmmParticipation @entity {
