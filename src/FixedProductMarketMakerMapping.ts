@@ -126,8 +126,10 @@ function updateBalance(
     balance.funder = funder;
     if (outcomeIndex === 0) {
       balance.balanceYes = outcomeTokensTraded;
+      balance.balanceNo = new BigInt(0);
     } else {
       balance.balanceNo = outcomeTokensTraded;
+      balance.balanceYes = new BigInt(0);
     }
   } else {
     if (type == "buy") {
@@ -527,14 +529,6 @@ export function handleBuy(event: FPMMBuy): void {
     event.params.buyer.toHexString()
   );
 
-  updateBalance(
-    fpmm as FixedProductMarketMaker,
-    event.params.buyer.toHexString(),
-    event.params.outcomeTokensBought,
-    outcomeIndex,
-    "buy"
-  );
-
   recordTrade(
     fpmm as FixedProductMarketMaker,
     event.params.buyer.toHexString(),
@@ -548,6 +542,14 @@ export function handleBuy(event: FPMMBuy): void {
     TRADE_TYPE_BUY,
     event.block.timestamp,
     event.transaction.hash
+  );
+
+  updateBalance(
+    fpmm as FixedProductMarketMaker,
+    event.params.buyer.toHexString(),
+    event.params.outcomeTokensBought,
+    outcomeIndex,
+    "buy"
   );
 }
 
@@ -626,14 +628,6 @@ export function handleSell(event: FPMMSell): void {
     event.params.seller.toHexString()
   );
 
-  updateBalance(
-    fpmm as FixedProductMarketMaker,
-    event.params.seller.toHexString(),
-    event.params.outcomeTokensSold,
-    outcomeIndex,
-    "buy"
-  );
-
   recordTrade(
     fpmm as FixedProductMarketMaker,
     event.params.seller.toHexString(),
@@ -647,6 +641,14 @@ export function handleSell(event: FPMMSell): void {
     TRADE_TYPE_SELL,
     event.block.timestamp,
     event.transaction.hash
+  );
+
+  updateBalance(
+    fpmm as FixedProductMarketMaker,
+    event.params.seller.toHexString(),
+    event.params.outcomeTokensSold,
+    outcomeIndex,
+    "sell"
   );
 }
 
