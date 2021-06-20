@@ -161,6 +161,7 @@ enum FpmmType {
 type FpmmTrade @entity {
   id: ID!
   fpmm: FixedProductMarketMaker!
+  fpmmId: String!
 
   # lifted from fpmm
   title: String

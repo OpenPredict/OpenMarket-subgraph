@@ -85,6 +85,7 @@ function recordTrade(
     fpmmTrade.type = tradeType;
     fpmmTrade.creator = traderAddress;
     fpmmTrade.creatorId = traderAddress;
+    fpmmTrade.fpmmId = fpmm.id;
     fpmmTrade.creationTimestamp = creationTimestamp;
     fpmmTrade.collateralAmount = collateralAmount;
     fpmmTrade.collateralAmountUSD = collateralAmountUSD;
