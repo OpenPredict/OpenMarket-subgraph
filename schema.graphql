@@ -170,6 +170,7 @@ type FpmmTrade @entity {
 
   type: TradeType!
   creator: Account!
+  creatorId: String!
   creationTimestamp: BigInt!
   collateralAmount: BigInt!
   collateralAmountUSD: BigDecimal!
