@@ -1,9 +1,9 @@
 // SPDX-License-Identifier: MIT
 pragma solidity ^0.5.0;
 
-import '@gnosis.pm/conditional-tokens-market-makers/contracts/FixedProductMarketMaker.sol';
-import '@gnosis.pm/conditional-tokens-market-makers/contracts/FPMMDeterministicFactory.sol';
-import { CTHelpers } from "@gnosis.pm/conditional-tokens-contracts/contracts/CTHelpers.sol";
+import './conditional-tokens-market-makers/FixedProductMarketMaker.sol';
+import './conditional-tokens-market-makers/FPMMDeterministicFactory.sol';
+//import { CTHelpers } from "./conditional-tokens-contracts/CTHelpers.sol";
 
 contract ConditionalTokensManager {
 
