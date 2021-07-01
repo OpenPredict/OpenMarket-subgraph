@@ -8,3 +8,11 @@ export let hoursPerDay = BigInt.fromI32(24);
 
 export let zeroDec = zero.toBigDecimal();
 export let oneDec = one.toBigDecimal();
+
+export let TRADE_TYPE_BUY = "Buy";
+export let TRADE_TYPE_SELL = "Sell";
+export let TRADE_TYPE_REDEEM = "Redeem";
+export let LIQUIDITY_TYPE_ADD = "Add";
+export let LIQUIDITY_TYPE_REMOVE = "Remove";
+export let FPMM_TYPE_TRADE = "Trade";
+export let FPMM_TYPE_LIQUIDITY = "Liquidity";

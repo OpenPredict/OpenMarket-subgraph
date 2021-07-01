@@ -1,15 +1,18 @@
-import { BigDecimal, log } from "@graphprotocol/graph-ts";
+import { Address, BigDecimal, BigInt, log } from "@graphprotocol/graph-ts";
 
 import {
   ConditionPreparation,
   ConditionResolution,
+  PayoutRedemption
 } from "../generated/ConditionalTokens/ConditionalTokens";
 import {
   Condition,
   FixedProductMarketMaker,
 } from "../generated/schema";
-import { zero } from "./utils/constants";
+import { TRADE_TYPE_REDEEM, zero, zeroDec } from "./utils/constants";
+import { setLiquidity, updateBalance } from "./utils/fpmm";
 import { requireGlobal } from "./utils/global";
+import { requireToken } from "./utils/token";
 
 export function handleConditionPreparation(event: ConditionPreparation): void {
   let condition = new Condition(event.params.conditionId.toHexString());
@@ -61,3 +64,28 @@ export function handleConditionResolution(event: ConditionResolution): void {
 
   condition.save();
 }
+
+export function handlePayoutRedemption(event: PayoutRedemption): void {
+
+  // get Condition object from event
+  let conditionId = event.params.conditionId.toHexString();
+  let condition = Condition.load(conditionId);
+  if (condition == null) {
+    log.error("could not find condition {} to resolve", [conditionId]);
+    return;
+  }
+
+  // set all share balances to 0 for the user
+  updateBalance(
+    condition as Condition,
+    event.params.redeemer.toHexString(),
+    zero,
+    0,
+    TRADE_TYPE_REDEEM
+  );
+
+  condition.save();
+}
+
+
+

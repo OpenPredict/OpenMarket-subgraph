@@ -48,7 +48,6 @@ contract ConditionalTokens is ERC1155 {
         IERC20 indexed collateralToken,
         bytes32 indexed parentCollectionId,
         bytes32 conditionId,
-        uint[] indexSets,
         uint payout
     );
 
@@ -215,7 +214,7 @@ contract ConditionalTokens is ERC1155 {
         emit PositionsMerge(msg.sender, collateralToken, parentCollectionId, conditionId, partition, amount);
     }
 
-    function redeemPositions(IERC20 collateralToken, bytes32 parentCollectionId, bytes32 conditionId, uint[] calldata indexSets) external {
+    function redeemPositions(IERC20 collateralToken, bytes32 parentCollectionId, bytes32 conditionId) external {
         uint den = payoutDenominator[conditionId];
         require(den > 0, "result for condition not received yet");
         uint outcomeSlotCount = payoutNumerators[conditionId].length;
@@ -224,9 +223,7 @@ contract ConditionalTokens is ERC1155 {
         uint totalPayout = 0;
 
         uint fullIndexSet = (1 << outcomeSlotCount) - 1;
-        for (uint i = 0; i < indexSets.length; i++) {
-            uint indexSet = indexSets[i];
-            require(indexSet > 0 && indexSet < fullIndexSet, "got invalid index set");
+        for (uint indexSet = 0; indexSet < fullIndexSet; indexSet++) {
             uint positionId = CTHelpers.getPositionId(collateralToken,
                 CTHelpers.getCollectionId(parentCollectionId, conditionId, indexSet));
 
@@ -251,8 +248,48 @@ contract ConditionalTokens is ERC1155 {
                 _mint(msg.sender, CTHelpers.getPositionId(collateralToken, parentCollectionId), totalPayout, "");
             }
         }
-        emit PayoutRedemption(msg.sender, collateralToken, parentCollectionId, conditionId, indexSets, totalPayout);
+        emit PayoutRedemption(msg.sender, collateralToken, parentCollectionId, conditionId, totalPayout);
     }
+
+    // function redeemPositions(IERC20 collateralToken, bytes32 parentCollectionId, bytes32 conditionId) external {
+    //     uint den = payoutDenominator[conditionId];
+    //     require(den > 0, "result for condition not received yet");
+    //     uint outcomeSlotCount = payoutNumerators[conditionId].length;
+    //     require(outcomeSlotCount > 0, "condition not prepared yet");
+
+    //     uint totalPayout = 0;
+
+    //     uint fullIndexSet = (1 << outcomeSlotCount) - 1;
+    //     uint[] memory positionsBurned = new uint[](outcomeSlotCount);
+    //     uint positionsCount = 0;
+    //     for (uint indexSet = 0; indexSet < fullIndexSet; indexSet++) {
+    //         uint positionId = CTHelpers.getPositionId(collateralToken,
+    //             CTHelpers.getCollectionId(parentCollectionId, conditionId, indexSet));
+
+    //         uint payoutNumerator = 0;
+    //         uint payoutStake = balanceOf(msg.sender, positionId);
+    //         for (uint j = 0; j < outcomeSlotCount; j++) {
+    //             if (indexSet & (1 << j) != 0) {
+    //                 payoutNumerator = payoutNumerator.add(payoutNumerators[conditionId][j]);
+    //                 positionsBurned[positionsCount++] = payoutStake;
+    //             }
+    //         }
+            
+    //         if (payoutStake > 0) {
+    //             totalPayout = totalPayout.add(payoutStake.mul(payoutNumerator).div(den));
+    //             _burn(msg.sender, positionId, payoutStake);
+    //         }
+    //     }
+
+    //     if (totalPayout > 0) {
+    //         if (parentCollectionId == bytes32(0)) {
+    //             require(collateralToken.transfer(msg.sender, totalPayout), "could not transfer payout to message sender");
+    //         } else {
+    //             _mint(msg.sender, CTHelpers.getPositionId(collateralToken, parentCollectionId), totalPayout, "");
+    //         }
+    //     }
+    //     emit PayoutRedemption(msg.sender, collateralToken, parentCollectionId, conditionId, positionsBurned, totalPayout);
+    // }
 
     /// @dev Gets the outcome slot count of a condition.
     /// @param conditionId ID of the condition.

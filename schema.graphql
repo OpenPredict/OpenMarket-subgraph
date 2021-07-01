@@ -112,7 +112,7 @@ type FpmmPoolMembership @entity {
 type ShareBalance @entity {
   id: ID!
   funder: String!
-  fpmm: FixedProductMarketMaker!
+  condition: Condition!
   balanceYes: BigInt!
   balanceNo: BigInt!
 }
@@ -151,6 +151,7 @@ enum TransactionType {
   Sell
   Add
   Remove
+  Redeem
 }
 
 enum FpmmType {

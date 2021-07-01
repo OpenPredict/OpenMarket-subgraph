@@ -17,6 +17,7 @@ import {
   FpmmLiquidity,
   FpmmTransaction,
   ShareBalance,
+  Condition,
 } from "../generated/schema";
 import {
   FPMMFundingAdded,
@@ -25,23 +26,29 @@ import {
   FPMMSell,
   Transfer,
 } from "../generated/templates/FixedProductMarketMaker/FixedProductMarketMaker";
-import { secondsPerHour, hoursPerDay, zero, zeroDec } from "./utils/constants";
+import {
+  secondsPerHour,
+  hoursPerDay,
+  zero,
+  zeroDec,
+  TRADE_TYPE_BUY,
+  TRADE_TYPE_SELL,
+  TRADE_TYPE_REDEEM,
+  LIQUIDITY_TYPE_ADD,
+  LIQUIDITY_TYPE_REMOVE,
+  FPMM_TYPE_TRADE,
+  FPMM_TYPE_LIQUIDITY,
+} from "./utils/constants";
 import { joinDayAndVolume } from "./utils/day-volume";
 import {
   updateScaledVolumes,
   calculateLiquidityParameter,
   setLiquidity,
+  updateBalance,
 } from "./utils/fpmm";
 import { requireToken } from "./utils/token";
 import { requireGlobal } from "./utils/global";
 import { max, min } from "./utils/math";
-
-const TRADE_TYPE_BUY = "Buy";
-const TRADE_TYPE_SELL = "Sell";
-const LIQUIDITY_TYPE_ADD = "Add";
-const LIQUIDITY_TYPE_REMOVE = "Remove";
-const FPMM_TYPE_TRADE = "Trade";
-const FPMM_TYPE_LIQUIDITY = "Liquidity";
 
 function requireAccount(accountAddress: string): Account | null {
   let account = Account.load(accountAddress);
@@ -111,44 +118,6 @@ function recordTrade(
 
     fpmmTransaction.save();
   }
-}
-
-function updateBalance(
-  fpmm: FixedProductMarketMaker,
-  funder: string,
-  outcomeTokensTraded: BigInt,
-  outcomeIndex: number,
-  type: string
-): void {
-  let id = funder + fpmm.id;
-  let balance = ShareBalance.load(id);
-  if (balance == null) {
-    balance = new ShareBalance(id);
-    balance.fpmm = fpmm.id;
-    balance.funder = funder;
-    if (outcomeIndex === 0) {
-      balance.balanceYes = outcomeTokensTraded;
-      balance.balanceNo = new BigInt(0);
-    } else {
-      balance.balanceNo = outcomeTokensTraded;
-      balance.balanceYes = new BigInt(0);
-    }
-  } else {
-    if (type == "buy") {
-      if (outcomeIndex === 0) {
-        balance.balanceYes = balance.balanceYes.plus(outcomeTokensTraded);
-      } else {
-        balance.balanceNo = balance.balanceNo.plus(outcomeTokensTraded);
-      }
-    } else {
-      if (outcomeIndex === 0) {
-        balance.balanceYes = balance.balanceYes.minus(outcomeTokensTraded);
-      } else {
-        balance.balanceNo = balance.balanceNo.minus(outcomeTokensTraded);
-      }
-    }
-  }
-  balance.save();
 }
 
 function recordFPMMLiquidity(
@@ -467,6 +436,14 @@ export function handleBuy(event: FPMMBuy): void {
     return;
   }
 
+  let condition = Condition.load(fpmm.condition);
+  if (condition == null) {
+    log.error("cannot sell: Condition instance for {} not found", [
+      fpmm.condition,
+    ]);
+    return;
+  }
+
   let oldAmounts = fpmm.outcomeTokenAmounts;
   let investmentAmountMinusFees = event.params.investmentAmount.minus(
     event.params.feeAmount
@@ -547,11 +524,11 @@ export function handleBuy(event: FPMMBuy): void {
   );
 
   updateBalance(
-    fpmm as FixedProductMarketMaker,
+    condition as Condition,
     event.params.buyer.toHexString(),
     event.params.outcomeTokensBought,
     outcomeIndex,
-    "buy"
+    TRADE_TYPE_BUY
   );
 }
 
@@ -563,6 +540,14 @@ export function handleSell(event: FPMMSell): void {
       "cannot sell: FixedProductMarketMaker instance for {} not found",
       [fpmmAddress]
     );
+    return;
+  }
+
+  let condition = Condition.load(fpmm.condition);
+  if (condition == null) {
+    log.error("cannot sell: Condition instance for {} not found", [
+      fpmm.condition,
+    ]);
     return;
   }
 
@@ -646,11 +631,11 @@ export function handleSell(event: FPMMSell): void {
   );
 
   updateBalance(
-    fpmm as FixedProductMarketMaker,
+    condition as Condition,
     event.params.seller.toHexString(),
     event.params.outcomeTokensSold,
     outcomeIndex,
-    "sell"
+    TRADE_TYPE_SELL
   );
 }
 

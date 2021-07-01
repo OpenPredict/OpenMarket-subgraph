@@ -28,6 +28,8 @@ dataSources:
           handler: handleConditionPreparation
         - event: ConditionResolution(indexed bytes32,indexed address,indexed bytes32,uint256,uint256[])
           handler: handleConditionResolution
+        - event: PayoutRedemption(indexed address,indexed address,indexed bytes32,bytes32,uint256)
+          handler: handlePayoutRedemption
       file: ./src/ConditionalTokensMapping.ts
   - kind: ethereum/contract
     name: FPMMDeterministicFactory
