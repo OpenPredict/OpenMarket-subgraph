@@ -11,8 +11,10 @@ export let oneDec = one.toBigDecimal();
 
 export let TRADE_TYPE_BUY = "Buy";
 export let TRADE_TYPE_SELL = "Sell";
-export let TRADE_TYPE_REDEEM = "Redeem";
 export let LIQUIDITY_TYPE_ADD = "Add";
 export let LIQUIDITY_TYPE_REMOVE = "Remove";
 export let FPMM_TYPE_TRADE = "Trade";
 export let FPMM_TYPE_LIQUIDITY = "Liquidity";
+export let SHARES_TYPE_ADD = "Add";
+export let SHARES_TYPE_SUB = "Sub";
+export let SHARES_TYPE_REDEEM = "Redeem";

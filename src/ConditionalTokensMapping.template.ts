@@ -9,7 +9,7 @@ import {
   Condition,
   FixedProductMarketMaker,
 } from "../generated/schema";
-import { TRADE_TYPE_REDEEM, zero, zeroDec } from "./utils/constants";
+import { SHARES_TYPE_REDEEM, zero } from "./utils/constants";
 import { setLiquidity, updateBalance } from "./utils/fpmm";
 import { requireGlobal } from "./utils/global";
 import { requireToken } from "./utils/token";
@@ -75,13 +75,14 @@ export function handlePayoutRedemption(event: PayoutRedemption): void {
     return;
   }
 
+
+
   // set all share balances to 0 for the user
   updateBalance(
     condition as Condition,
     event.params.redeemer.toHexString(),
-    zero,
-    0,
-    TRADE_TYPE_REDEEM
+    [],
+    SHARES_TYPE_REDEEM
   );
 
   condition.save();

@@ -9,9 +9,9 @@ import {
   one,
   ten,
   zeroDec,
-  TRADE_TYPE_BUY,
-  TRADE_TYPE_SELL,
-  TRADE_TYPE_REDEEM,
+  SHARES_TYPE_ADD,
+  SHARES_TYPE_SUB,
+  SHARES_TYPE_REDEEM,
 } from "./constants";
 import { nthRoot } from "./nth-root";
 import { joinDayAndScaledVolume, joinDayAndUsdVolume } from "./day-volume";
@@ -192,11 +192,51 @@ export function calculateLiquidityParameter(
   return nthRoot(amountsProduct, outcomeTokenAmounts.length);
 }
 
+// export function updateBalance(
+//   condition: Condition,
+//   funder: string,
+//   outcomeTokensTraded: BigInt,
+//   outcomeIndex: number,
+//   type: string
+// ): void {
+//   let id = funder + condition.id;
+//   let balance = ShareBalance.load(id);
+//   if (balance == null) {
+//     balance = new ShareBalance(id);
+//     balance.condition = condition.id;
+//     balance.funder = funder;
+//     if (outcomeIndex === 0) {
+//       balance.balanceYes = outcomeTokensTraded;
+//       balance.balanceNo = new BigInt(0);
+//     } else {
+//       balance.balanceNo = outcomeTokensTraded;
+//       balance.balanceYes = new BigInt(0);
+//     }
+//   } else {
+//     if (type == SHARES_TYPE_ADD) {
+//       if (outcomeIndex === 0) {
+//         balance.balanceYes = balance.balanceYes.plus(outcomeTokensTraded);
+//       } else {
+//         balance.balanceNo = balance.balanceNo.plus(outcomeTokensTraded);
+//       }
+//     } else if (type == SHARES_TYPE_SUB) {
+//       if (outcomeIndex === 0) {
+//         balance.balanceYes = balance.balanceYes.minus(outcomeTokensTraded);
+//       } else {
+//         balance.balanceNo = balance.balanceNo.minus(outcomeTokensTraded);
+//       }
+//     } else if (type == SHARES_TYPE_REDEEM) {
+//       balance.balanceYes = zero;
+//       balance.balanceNo = zero;
+//     }
+//   }
+//   balance.save();
+// }
+
 export function updateBalance(
   condition: Condition,
   funder: string,
-  outcomeTokensTraded: BigInt,
-  outcomeIndex: number,
+  outcomeTokensTraded: BigInt[],
   type: string
 ): void {
   let id = funder + condition.id;
@@ -205,27 +245,16 @@ export function updateBalance(
     balance = new ShareBalance(id);
     balance.condition = condition.id;
     balance.funder = funder;
-    if (outcomeIndex === 0) {
-      balance.balanceYes = outcomeTokensTraded;
-      balance.balanceNo = new BigInt(0);
-    } else {
-      balance.balanceNo = outcomeTokensTraded;
-      balance.balanceYes = new BigInt(0);
-    }
+    balance.balanceYes = outcomeTokensTraded[0];
+    balance.balanceNo = outcomeTokensTraded[1];
   } else {
-    if (type == TRADE_TYPE_BUY) {
-      if (outcomeIndex === 0) {
-        balance.balanceYes = balance.balanceYes.plus(outcomeTokensTraded);
-      } else {
-        balance.balanceNo = balance.balanceNo.plus(outcomeTokensTraded);
-      }
-    } else if (type == TRADE_TYPE_SELL) {
-      if (outcomeIndex === 0) {
-        balance.balanceYes = balance.balanceYes.minus(outcomeTokensTraded);
-      } else {
-        balance.balanceNo = balance.balanceNo.minus(outcomeTokensTraded);
-      }
-    } else if (type == TRADE_TYPE_REDEEM) {
+    if (type == SHARES_TYPE_ADD) {
+      balance.balanceYes = balance.balanceYes.plus(outcomeTokensTraded[0]);
+      balance.balanceNo = balance.balanceNo.plus(outcomeTokensTraded[1]);
+    } else if (type == SHARES_TYPE_SUB) {
+      balance.balanceYes = balance.balanceYes.minus(outcomeTokensTraded[0]);
+      balance.balanceNo = balance.balanceNo.minus(outcomeTokensTraded[1]);
+    } else if (type == SHARES_TYPE_REDEEM) {
       balance.balanceYes = zero;
       balance.balanceNo = zero;
     }

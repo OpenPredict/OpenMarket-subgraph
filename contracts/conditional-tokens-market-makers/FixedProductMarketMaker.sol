@@ -21,7 +21,8 @@ contract FixedProductMarketMaker is ERC20, ERC1155TokenReceiver {
     event FPMMFundingAdded(
         address indexed funder,
         uint[] amountsAdded,
-        uint sharesMinted
+        uint sharesMinted,
+        uint[] amountsSentBack
     );
     event FPMMFundingRemoved(
         address indexed funder,
@@ -196,6 +197,7 @@ contract FixedProductMarketMaker is ERC20, ERC1155TokenReceiver {
         require(addedFunds > 0, "funding must be non-zero");
 
         uint[] memory sendBackAmounts = new uint[](positionIds.length);
+        uint[] memory addedAmounts = new uint[](positionIds.length);
         uint poolShareSupply = totalSupply();
         uint mintAmount;
         if(poolShareSupply > 0) {
@@ -242,12 +244,12 @@ contract FixedProductMarketMaker is ERC20, ERC1155TokenReceiver {
 
         conditionalTokens.safeBatchTransferFrom(address(this), msg.sender, positionIds, sendBackAmounts, "");
 
-        // transform sendBackAmounts to array of amounts added
+        // array of amounts added
         for (uint i = 0; i < sendBackAmounts.length; i++) {
-            sendBackAmounts[i] = addedFunds.sub(sendBackAmounts[i]);
+            addedAmounts[i] = addedFunds.sub(sendBackAmounts[i]);
         }
 
-        emit FPMMFundingAdded(msg.sender, sendBackAmounts, mintAmount);
+        emit FPMMFundingAdded(msg.sender, addedAmounts, mintAmount, sendBackAmounts);
     }
 
     function removeFunding(uint sharesToBurn)
@@ -395,7 +397,8 @@ contract FixedProductMarketMakerData {
     event FPMMFundingAdded(
         address indexed funder,
         uint[] amountsAdded,
-        uint sharesMinted
+        uint sharesMinted,
+        uint[] amountsSentBack
     );
     event FPMMFundingRemoved(
         address indexed funder,

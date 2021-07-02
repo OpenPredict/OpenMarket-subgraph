@@ -33,11 +33,12 @@ import {
   zeroDec,
   TRADE_TYPE_BUY,
   TRADE_TYPE_SELL,
-  TRADE_TYPE_REDEEM,
   LIQUIDITY_TYPE_ADD,
   LIQUIDITY_TYPE_REMOVE,
   FPMM_TYPE_TRADE,
   FPMM_TYPE_LIQUIDITY,
+  SHARES_TYPE_ADD,
+  SHARES_TYPE_SUB,
 } from "./utils/constants";
 import { joinDayAndVolume } from "./utils/day-volume";
 import {
@@ -340,6 +341,14 @@ export function handleFundingAdded(event: FPMMFundingAdded): void {
     return;
   }
 
+  let condition = Condition.load(fpmm.condition);
+  if (condition == null) {
+    log.error("cannot remove funding: Condition instance for {} not found", [
+      fpmm.condition,
+    ]);
+    return;
+  }
+
   let oldAmounts = fpmm.outcomeTokenAmounts;
   let amountsAdded = event.params.amountsAdded;
   let newAmounts = new Array<BigInt>(oldAmounts.length);
@@ -376,6 +385,13 @@ export function handleFundingAdded(event: FPMMFundingAdded): void {
     event.block.timestamp,
     event.transaction.hash
   );
+
+  updateBalance(
+    condition as Condition,
+    event.params.funder.toHexString(),
+    event.params.amountsSentBack,
+    SHARES_TYPE_ADD
+  );
 }
 
 export function handleFundingRemoved(event: FPMMFundingRemoved): void {
@@ -386,6 +402,14 @@ export function handleFundingRemoved(event: FPMMFundingRemoved): void {
       "cannot remove funding: FixedProductMarketMaker instance for {} not found",
       [fpmmAddress]
     );
+    return;
+  }
+
+  let condition = Condition.load(fpmm.condition);
+  if (condition == null) {
+    log.error("cannot remove funding: Condition instance for {} not found", [
+      fpmm.condition,
+    ]);
     return;
   }
 
@@ -423,6 +447,13 @@ export function handleFundingRemoved(event: FPMMFundingRemoved): void {
     event.params.collateralRemovedFromFeePool,
     event.block.timestamp,
     event.transaction.hash
+  );
+
+  updateBalance(
+    condition as Condition,
+    event.params.funder.toHexString(),
+    event.params.amountsRemoved,
+    SHARES_TYPE_ADD
   );
 }
 
@@ -526,9 +557,10 @@ export function handleBuy(event: FPMMBuy): void {
   updateBalance(
     condition as Condition,
     event.params.buyer.toHexString(),
-    event.params.outcomeTokensBought,
-    outcomeIndex,
-    TRADE_TYPE_BUY
+    outcomeIndex === 0
+      ? [event.params.outcomeTokensBought, zero]
+      : [zero, event.params.outcomeTokensBought],
+    SHARES_TYPE_ADD
   );
 }
 
@@ -633,9 +665,10 @@ export function handleSell(event: FPMMSell): void {
   updateBalance(
     condition as Condition,
     event.params.seller.toHexString(),
-    event.params.outcomeTokensSold,
-    outcomeIndex,
-    TRADE_TYPE_SELL
+    outcomeIndex === 0
+      ? [event.params.outcomeTokensSold, zero]
+      : [zero, event.params.outcomeTokensSold],
+    SHARES_TYPE_SUB
   );
 }
 

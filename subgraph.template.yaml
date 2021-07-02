@@ -105,7 +105,7 @@ templates:
         - name: ERC20Detailed
           file: ./abis/ERC20Detailed.json
       eventHandlers:
-        - event: FPMMFundingAdded(indexed address,uint256[],uint256)
+        - event: FPMMFundingAdded(indexed address,uint256[],uint256,uint256[])
           handler: handleFundingAdded
         - event: FPMMFundingRemoved(indexed address,uint256[],uint256,uint256)
           handler: handleFundingRemoved
