@@ -1,20 +1,25 @@
-const seed = process.env.SEED || 'myth like bonus scare over problem client lizard pioneer submit female collect';
+//const seed = process.env.SEED || 'myth like bonus scare over problem client lizard pioneer submit female collect';
+require('dotenv').config()
+const seed = process.env.SEED
+const privKey = process.env.PRIVATE_KEY
 const HDWalletProvider = require('@truffle/hdwallet-provider');
 
 const networks = Object.assign(...[
-  [1, 'mainnet'],
-  [3, 'ropsten'],
-  [4, 'rinkeby'],
-  [5, 'goerli', `${2e9}`],
-  [42, 'kovan'],
-  [77, 'sokol',, 'https://sokol.poa.network'],
-  [100, 'xdai',, 'https://lively-empty-wind.xdai.quiknode.pro/827b90b45d544848ea8a880d30567297d3c9ef6e/'],
-].map(([networkId, network, gasPrice, rpcUrl]) => ({
+  [seed, 1, 'mainnet'],
+  [seed, 3, 'ropsten'],
+  [seed, 4, 'rinkeby'],
+  [seed, 5, 'goerli', `${2e9}`],
+  [seed, 42, 'kovan'],
+  [seed, 77, 'sokol',,, 'https://sokol.poa.network'],
+  [seed, 100, 'xdai',,, 'https://lively-empty-wind.xdai.quiknode.pro/827b90b45d544848ea8a880d30567297d3c9ef6e/'],
+  [privKey, 80001, 'mumbai',, '20000000', 'https://rpc-mumbai.maticvigil.com/'],
+].map(([secret, networkId, network, gasPrice, gasLimit, rpcUrl]) => ({
   [network]: {
     network_id: networkId,
-    gasPrice,
+    gasPrice: gasPrice,
+    gas: gasLimit,
     provider: () => new HDWalletProvider(
-      seed,
+      secret,
       rpcUrl || `https://${network}.infura.io/v3/17d5bb5953564f589d48d535f573e486`,
     ),
   },
