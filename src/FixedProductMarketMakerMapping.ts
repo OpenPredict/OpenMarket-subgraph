@@ -387,7 +387,7 @@ export function handleFundingAdded(event: FPMMFundingAdded): void {
   );
 
   updateBalance(
-    condition as Condition,
+    fpmm as FixedProductMarketMaker,
     event.params.funder.toHexString(),
     event.params.amountsSentBack,
     SHARES_TYPE_ADD
@@ -450,7 +450,7 @@ export function handleFundingRemoved(event: FPMMFundingRemoved): void {
   );
 
   updateBalance(
-    condition as Condition,
+    fpmm as FixedProductMarketMaker,
     event.params.funder.toHexString(),
     event.params.amountsRemoved,
     SHARES_TYPE_ADD
@@ -555,7 +555,7 @@ export function handleBuy(event: FPMMBuy): void {
   );
 
   updateBalance(
-    condition as Condition,
+    fpmm as FixedProductMarketMaker,
     event.params.buyer.toHexString(),
     outcomeIndex === 0
       ? [event.params.outcomeTokensBought, zero]
@@ -663,7 +663,7 @@ export function handleSell(event: FPMMSell): void {
   );
 
   updateBalance(
-    condition as Condition,
+    fpmm as FixedProductMarketMaker,
     event.params.seller.toHexString(),
     outcomeIndex === 0
       ? [event.params.outcomeTokensSold, zero]

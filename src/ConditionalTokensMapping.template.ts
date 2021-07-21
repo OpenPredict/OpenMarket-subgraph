@@ -75,11 +75,11 @@ export function handlePayoutRedemption(event: PayoutRedemption): void {
     return;
   }
 
-
-
+  let fpmms = condition.fixedProductMarketMakers;
+  let fpmm = FixedProductMarketMaker.load(fpmms[0]);
   // set all share balances to 0 for the user
   updateBalance(
-    condition as Condition,
+    fpmm as FixedProductMarketMaker,
     event.params.redeemer.toHexString(),
     [],
     SHARES_TYPE_REDEEM

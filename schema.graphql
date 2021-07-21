@@ -100,6 +100,7 @@ type FixedProductMarketMaker @entity {
 
   poolMembers: [FpmmPoolMembership!] @derivedFrom(field: "pool")
   participants: [FpmmParticipation!] @derivedFrom(field: "fpmm")
+  shareBalances: [ShareBalance!]! @derivedFrom(field: "fpmm")
 }
 
 type FpmmPoolMembership @entity {
@@ -112,7 +113,7 @@ type FpmmPoolMembership @entity {
 type ShareBalance @entity {
   id: ID!
   funder: String!
-  condition: Condition!
+  fpmm: FixedProductMarketMaker!
   balanceYes: BigInt!
   balanceNo: BigInt!
 }

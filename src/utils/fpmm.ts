@@ -234,16 +234,16 @@ export function calculateLiquidityParameter(
 // }
 
 export function updateBalance(
-  condition: Condition,
+  fpmm: FixedProductMarketMaker,
   funder: string,
   outcomeTokensTraded: BigInt[],
   type: string
 ): void {
-  let id = funder + condition.id;
+  let id = funder + fpmm.id;
   let balance = ShareBalance.load(id);
   if (balance == null) {
     balance = new ShareBalance(id);
-    balance.condition = condition.id;
+    balance.fpmm = fpmm.id;
     balance.funder = funder;
     balance.balanceYes = outcomeTokensTraded[0];
     balance.balanceNo = outcomeTokensTraded[1];
