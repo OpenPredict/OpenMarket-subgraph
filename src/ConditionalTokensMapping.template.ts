@@ -1,4 +1,4 @@
-import { Address, BigDecimal, BigInt, log } from "@graphprotocol/graph-ts";
+import { Address, BigDecimal, BigInt, log, json } from "@graphprotocol/graph-ts";
 
 import {
   ConditionPreparation,
@@ -74,14 +74,11 @@ export function handlePayoutRedemption(event: PayoutRedemption): void {
     log.error("could not find condition {} to resolve", [conditionId]);
     return;
   }
-
-  let fpmms = condition.fixedProductMarketMakers;
-  let fpmm = FixedProductMarketMaker.load(fpmms[0]);
   // set all share balances to 0 for the user
   updateBalance(
-    fpmm as FixedProductMarketMaker,
+    condition as Condition,
     event.params.redeemer.toHexString(),
-    [],
+    [zero, zero],
     SHARES_TYPE_REDEEM
   );
 

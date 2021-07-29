@@ -9,6 +9,7 @@ type Condition @entity {
   scalarHigh: BigInt
   fixedProductMarketMakers: [FixedProductMarketMaker!]!
     @derivedFrom(field: "conditions")
+  shareBalances: [ShareBalance!]! @derivedFrom(field: "condition")
 }
 
 type FixedProductMarketMaker @entity {
@@ -100,7 +101,6 @@ type FixedProductMarketMaker @entity {
 
   poolMembers: [FpmmPoolMembership!] @derivedFrom(field: "pool")
   participants: [FpmmParticipation!] @derivedFrom(field: "fpmm")
-  shareBalances: [ShareBalance!]! @derivedFrom(field: "fpmm")
 }
 
 type FpmmPoolMembership @entity {
@@ -113,7 +113,7 @@ type FpmmPoolMembership @entity {
 type ShareBalance @entity {
   id: ID!
   funder: String!
-  fpmm: FixedProductMarketMaker!
+  condition: Condition!
   balanceYes: BigInt!
   balanceNo: BigInt!
 }

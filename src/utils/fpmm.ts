@@ -1,4 +1,4 @@
-import { BigInt, Address, BigDecimal } from "@graphprotocol/graph-ts";
+import { BigInt, Address, BigDecimal, log } from "@graphprotocol/graph-ts";
 import {
   Condition,
   FixedProductMarketMaker,
@@ -234,30 +234,29 @@ export function calculateLiquidityParameter(
 // }
 
 export function updateBalance(
-  fpmm: FixedProductMarketMaker,
+  condition: Condition,
   funder: string,
   outcomeTokensTraded: BigInt[],
   type: string
 ): void {
-  let id = funder + fpmm.id;
+  let id = funder + condition.id;
   let balance = ShareBalance.load(id);
   if (balance == null) {
     balance = new ShareBalance(id);
-    balance.fpmm = fpmm.id;
+    balance.condition = condition.id;
     balance.funder = funder;
-    balance.balanceYes = outcomeTokensTraded[0];
-    balance.balanceNo = outcomeTokensTraded[1];
-  } else {
-    if (type == SHARES_TYPE_ADD) {
-      balance.balanceYes = balance.balanceYes.plus(outcomeTokensTraded[0]);
-      balance.balanceNo = balance.balanceNo.plus(outcomeTokensTraded[1]);
-    } else if (type == SHARES_TYPE_SUB) {
-      balance.balanceYes = balance.balanceYes.minus(outcomeTokensTraded[0]);
-      balance.balanceNo = balance.balanceNo.minus(outcomeTokensTraded[1]);
-    } else if (type == SHARES_TYPE_REDEEM) {
-      balance.balanceYes = zero;
-      balance.balanceNo = zero;
-    }
+    balance.balanceYes = zero;
+    balance.balanceNo = zero;
+  }
+  if (type == SHARES_TYPE_ADD) {
+    balance.balanceYes = balance.balanceYes.plus(outcomeTokensTraded[0]);
+    balance.balanceNo = balance.balanceNo.plus(outcomeTokensTraded[1]);
+  } else if (type == SHARES_TYPE_SUB) {
+    balance.balanceYes = balance.balanceYes.minus(outcomeTokensTraded[0]);
+    balance.balanceNo = balance.balanceNo.minus(outcomeTokensTraded[1]);
+  } else if (type == SHARES_TYPE_REDEEM) {
+    balance.balanceYes = zero;
+    balance.balanceNo = zero;
   }
   balance.save();
 }
