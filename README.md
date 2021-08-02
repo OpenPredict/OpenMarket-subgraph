@@ -18,6 +18,13 @@ yarn create-local # Create subgraph
 yarn deploy-local # deploy subgraph
 ```
 
+# Deploy to Matic Mumbai
+
+```bash
+yarn codegen:mumbai
+graph deploy --studio openmarket-mumbai
+```
+
 ## Code templates
 
 Some parts of the configuration and mapping code depend on the addresses of specific contracts on the chain or which network the subgraph is being run on. In those instances, a Truffle script `render-templates.js` is executed to render certain `<file>.template.<ext>` files into their `<file>.<ext>` counterparts. The templates themselves are just Mustache templates, and the parameters are gotten from the Web3 provider's view of the connected network and the various Truffle artifacts which result from either running the migrations that deploy the necessary contracts onto the test chain or injecting canonical information about public contracts from the `networks.json` file into these artifacts.
